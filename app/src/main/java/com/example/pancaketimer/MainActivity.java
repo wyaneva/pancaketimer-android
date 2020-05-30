@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Handler;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -13,26 +14,89 @@ import android.view.View;
 
 public class MainActivity extends AppCompatActivity {
 
-    void startTimer(final long total_ms, final MediaPlayer mp) {
+    final int time_side1 = 85000;
+    final int time_flip = 5000;
+    final int time_side2 = 60000;
+
+    //final int time_side1 = 5000;
+    //final int time_flip = 2000;
+    //final int time_side2 = 6000;
+
+    void write_progress(int progress) {
         final ProgressBar progress_countdown = findViewById(R.id.progress_countdown);
+        progress_countdown.setProgress(progress);
+    }
+
+    void write_progress(int progress, CharSequence text) {
+        write_progress(progress);
         final TextView textView_countdown= findViewById(R.id.textView_countdown);
+        textView_countdown.setText(text);
+    }
 
-        new CountDownTimer(total_ms, 1000) {
+    void update_title(CharSequence text) {
+        final TextView textView_side = findViewById(R.id.textView_side);
+        textView_side.setText(text);
+    }
 
+    void setButtonEnabled(Boolean value) {
+        final Button button_start = findViewById(R.id.button_Start);
+        button_start.setEnabled(value);
+    }
+
+    void startTimer(final int counterId, final MediaPlayer mp) {
+
+        long total_ms = 0;
+        Boolean doWriteProgressText = true;
+        CharSequence endText = "Flip!";
+        Boolean doPlaySound = true;
+
+        switch(counterId){
+            case 0: // side 1
+                update_title("Side 1");
+                total_ms = time_side1;
+                break;
+            case 1: // flip time
+                total_ms = time_flip;
+                doWriteProgressText = false;
+                doPlaySound = false;
+                break;
+            case 2: // side 2
+                update_title("Side 2");
+                total_ms = time_side2;
+                endText = "Done!";
+                break;
+            default:
+                setButtonEnabled(true);
+                return;
+        }
+
+        final long finalTotal_ms = total_ms;
+        final Boolean finalDoWriteProgressText = doWriteProgressText;
+        final CharSequence finalEndText = endText;
+        final Boolean finalDoPlaySound = doPlaySound;
+
+        new CountDownTimer(finalTotal_ms, 1000) {
+            @Override
             public void onTick(long millisUntilFinished) {
                 long sUntilFinished = millisUntilFinished / 1000 + 1; // dispay n to 1, not n-1 to 0
-                long total_s = total_ms / 1000;
-                long sElapsed = total_s - sUntilFinished;
-                int progress = (int)((sElapsed*100)/total_s);
+                long total_s = finalTotal_ms / 1000;
+                int progress = (int) ((sUntilFinished * 100) / total_s);
+                CharSequence text = sUntilFinished + "/" + total_s;
 
-                textView_countdown.setText(sUntilFinished + "/" + total_s);
-                progress_countdown.setProgress(100-progress);
+                if (finalDoWriteProgressText) {
+                    write_progress(progress, text);
+                } else {
+                    write_progress(progress);
+                }
             }
 
+            @Override
             public void onFinish() {
-                textView_countdown.setText("Flip!");
-                progress_countdown.setProgress(0);
-                mp.start();
+                write_progress(0, finalEndText);
+                if(finalDoPlaySound) {
+                    mp.start();
+                }
+                startTimer(counterId+1, mp);
             }
         }.start();
     }
@@ -46,9 +110,11 @@ public class MainActivity extends AppCompatActivity {
         final MediaPlayer mp = MediaPlayer.create(this, R.raw.beep);
 
         final Button button = findViewById(R.id.button_Start);
+        final TextView textView_side = findViewById(R.id.textView_side);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                startTimer(10000, mp);
+                setButtonEnabled(false);
+                startTimer(0, mp);
             }
         });
     }
