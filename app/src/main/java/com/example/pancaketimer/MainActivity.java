@@ -6,6 +6,7 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -46,9 +47,8 @@ public class MainActivity extends AppCompatActivity {
     void startTimer(final int counterId, final MediaPlayer mp) {
 
         long total_ms = 0;
-        Boolean doWriteProgressText = true;
         CharSequence endText = "Flip!";
-        Boolean doPlaySound = true;
+        Boolean isFlip = false;
 
         switch(counterId){
             case 0: // side 1
@@ -57,8 +57,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case 1: // flip time
                 total_ms = time_flip;
-                doWriteProgressText = false;
-                doPlaySound = false;
+                isFlip = true;
                 break;
             case 2: // side 2
                 update_title("Side 2");
@@ -71,9 +70,8 @@ public class MainActivity extends AppCompatActivity {
         }
 
         final long finalTotal_ms = total_ms;
-        final Boolean finalDoWriteProgressText = doWriteProgressText;
         final CharSequence finalEndText = endText;
-        final Boolean finalDoPlaySound = doPlaySound;
+        final Boolean finalIsFlip = isFlip;
 
         new CountDownTimer(finalTotal_ms, 1000) {
             @Override
@@ -83,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
                 int progress = (int) ((sUntilFinished * 100) / total_s);
                 CharSequence text = sUntilFinished + "/" + total_s;
 
-                if (finalDoWriteProgressText) {
+                if (!finalIsFlip) {
                     write_progress(progress, text);
                 } else {
                     write_progress(progress);
@@ -93,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onFinish() {
                 write_progress(0, finalEndText);
-                if(finalDoPlaySound) {
+                if(!finalIsFlip) {
                     mp.start();
                 }
                 startTimer(counterId+1, mp);
@@ -107,6 +105,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         getSupportActionBar().setIcon(R.drawable.ic_timer);
         getSupportActionBar().setTitle("Pancake Timer");
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         final MediaPlayer mp = MediaPlayer.create(this, R.raw.beep);
 
         final Button button = findViewById(R.id.button_Start);
