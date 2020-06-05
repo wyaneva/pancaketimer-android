@@ -23,6 +23,8 @@ public class MainActivity extends AppCompatActivity {
     //final int time_flip = 2000;
     //final int time_side2 = 6000;
 
+    int pancakeCount = 1;
+
     void write_progress(int progress) {
         final ProgressBar progress_countdown = findViewById(R.id.progress_countdown);
         progress_countdown.setProgress(progress);
@@ -34,7 +36,12 @@ public class MainActivity extends AppCompatActivity {
         textView_countdown.setText(text);
     }
 
-    void update_title(CharSequence text) {
+    void update_pancake() {
+        final TextView textView_side = findViewById(R.id.textView_pancakecount);
+        textView_side.setText("Pancake " + pancakeCount);
+    }
+
+    void update_side(CharSequence text) {
         final TextView textView_side = findViewById(R.id.textView_side);
         textView_side.setText(text);
     }
@@ -52,7 +59,8 @@ public class MainActivity extends AppCompatActivity {
 
         switch(counterId){
             case 0: // side 1
-                update_title("Side 1");
+                update_side("Side 1");
+                update_pancake();
                 total_ms = time_side1;
                 break;
             case 1: // flip time
@@ -60,12 +68,13 @@ public class MainActivity extends AppCompatActivity {
                 isFlip = true;
                 break;
             case 2: // side 2
-                update_title("Side 2");
+                update_side("Side 2");
                 total_ms = time_side2;
                 endText = "Done!";
                 break;
             default:
                 setButtonEnabled(true);
+                pancakeCount++;
                 return;
         }
 
