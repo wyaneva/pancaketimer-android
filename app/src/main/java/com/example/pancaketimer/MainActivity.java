@@ -3,7 +3,9 @@ package com.example.pancaketimer;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -18,15 +20,16 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.view.View;
 
+import com.example.pancaketimer.util.PrefUtil;
+
 public class MainActivity extends AppCompatActivity {
 
-    final int time_side1 = 85000;
-    final int time_flip = 5000;
-    final int time_side2 = 60000;
+    private SharedPreferences preferences;
 
-    //final int time_side1 = 5000;
-    //final int time_flip = 2000;
-    //final int time_side2 = 6000;
+    int time_side1 = PrefUtil.SIDE1_DEFAULT;
+    int time_flip = PrefUtil.FLIP_DEFAULT;
+    int time_side2 = PrefUtil.SIDE2_DEFAULT;
+
 
     int pancakeCount = 1;
 
@@ -121,6 +124,10 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("Pancake Timer");
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         final MediaPlayer mp = MediaPlayer.create(this, R.raw.beep);
+
+        // Restore preferences
+        time_side1 = PrefUtil.getSide1(this);
+        time_side2 = PrefUtil.getSide2(this);
 
         final Button button = findViewById(R.id.button_Start);
         final TextView textView_side = findViewById(R.id.textView_side);
