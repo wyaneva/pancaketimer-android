@@ -26,10 +26,9 @@ public class MainActivity extends AppCompatActivity {
 
     private SharedPreferences preferences;
 
-    int time_side1 = PrefUtil.SIDE1_DEFAULT;
-    int time_flip = PrefUtil.FLIP_DEFAULT;
-    int time_side2 = PrefUtil.SIDE2_DEFAULT;
-
+    int time_side1; // = PrefUtil.PANCAKE_SIDE1_DEFAULT;
+    int time_flip;  // = PrefUtil.PANCAKE_FLIP_DEFAULT;
+    int time_side2; // = PrefUtil.PANCAKE_SIDE2_DEFAULT;
 
     int pancakeCount = 1;
 
@@ -128,6 +127,7 @@ public class MainActivity extends AppCompatActivity {
         // Restore preferences
         time_side1 = PrefUtil.getSide1(this);
         time_side2 = PrefUtil.getSide2(this);
+        time_flip = PrefUtil.getFlip(this);
 
         final Button button = findViewById(R.id.button_Start);
         final TextView textView_side = findViewById(R.id.textView_side);
