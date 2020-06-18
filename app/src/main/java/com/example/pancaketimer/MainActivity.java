@@ -1,6 +1,7 @@
 package com.example.pancaketimer;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
@@ -30,6 +31,9 @@ public class MainActivity extends AppCompatActivity {
     int time_flip;  // = PrefUtil.PANCAKE_FLIP_DEFAULT;
     int time_side2; // = PrefUtil.PANCAKE_SIDE2_DEFAULT;
 
+    // used by the settings menu
+    int LAUNCH_SETTINGS = 1;
+
     int pancakeCount = 1;
 
     void write_progress(int progress) {
@@ -56,6 +60,12 @@ public class MainActivity extends AppCompatActivity {
     void setButtonEnabled(Boolean value) {
         final Button button_start = findViewById(R.id.button_Start);
         button_start.setEnabled(value);
+        if(value) {
+            button_start.getBackground().setAlpha(255);
+        }
+        else {
+            button_start.getBackground().setAlpha(100);
+        }
     }
 
     void startTimer(final int counterId, final MediaPlayer mp) {
@@ -115,6 +125,26 @@ public class MainActivity extends AppCompatActivity {
         }.start();
     }
 
+    void restorePreferences() {
+        time_side1 = PrefUtil.getSide1(this);
+        time_side2 = PrefUtil.getSide2(this);
+        time_flip = PrefUtil.getFlip(this);
+
+        TextView textView_mode = findViewById(R.id.textView_mode);
+        int mode = PrefUtil.getMode(this);
+        switch(mode) {
+            case PrefUtil.MODE_PANCAKE:
+                textView_mode.setText("Mode: Pancake");
+                break;
+            case PrefUtil.MODE_CREPE:
+                textView_mode.setText("Mode: Crepe");
+                break;
+            case PrefUtil.MODE_CUSTOM:
+                textView_mode.setText("Mode: Custom");
+                break;
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -124,10 +154,7 @@ public class MainActivity extends AppCompatActivity {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         final MediaPlayer mp = MediaPlayer.create(this, R.raw.beep);
 
-        // Restore preferences
-        time_side1 = PrefUtil.getSide1(this);
-        time_side2 = PrefUtil.getSide2(this);
-        time_flip = PrefUtil.getFlip(this);
+        restorePreferences();
 
         final Button button = findViewById(R.id.button_Start);
         final TextView textView_side = findViewById(R.id.textView_side);
@@ -151,10 +178,21 @@ public class MainActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.action_settings:
                 Intent settingsIntent = new Intent(MainActivity.this, SettingsActivity.class);
-                startActivity(settingsIntent);
+                startActivityForResult(settingsIntent, LAUNCH_SETTINGS);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode == LAUNCH_SETTINGS) {
+            if(resultCode == Activity.RESULT_OK) {
+                restorePreferences();
+            }
         }
     }
 }

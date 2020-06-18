@@ -81,14 +81,4 @@ public class PrefUtil {
         prefedit.putInt(FLIP_KEY, seconds*1000);
         prefedit.apply();
     }
-
-    int getPreviousSide1() {
-        //placeholder
-        return 85000;
-    }
-
-    int getPreviousSide2() {
-        //placeholder
-        return 85000;
-    }
 }
