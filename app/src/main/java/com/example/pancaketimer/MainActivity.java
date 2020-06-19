@@ -33,6 +33,8 @@ public class MainActivity extends AppCompatActivity {
 
     // used by the settings menu
     int LAUNCH_SETTINGS = 1;
+    boolean areSettingsUpdated = false;
+    boolean isTimerRunning = false;
 
     int pancakeCount = 1;
 
@@ -68,7 +70,31 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    void restorePreferences() {
+        time_side1 = PrefUtil.getSide1(this);
+        time_side2 = PrefUtil.getSide2(this);
+        time_flip = PrefUtil.getFlip(this);
+
+        TextView textView_mode = findViewById(R.id.textView_mode);
+        int mode = PrefUtil.getMode(this);
+        switch(mode) {
+            case PrefUtil.MODE_PANCAKE:
+                textView_mode.setText("Mode: Pancake");
+                break;
+            case PrefUtil.MODE_CREPE:
+                textView_mode.setText("Mode: Crepe");
+                break;
+            case PrefUtil.MODE_CUSTOM:
+                textView_mode.setText("Mode: Custom");
+                break;
+        }
+
+        areSettingsUpdated = false;
+    }
+
     void startTimer(final int counterId, final MediaPlayer mp) {
+
+        isTimerRunning = true;
 
         long total_ms = 0;
         CharSequence endText = "Flip!";
@@ -92,6 +118,10 @@ public class MainActivity extends AppCompatActivity {
             default:
                 setButtonEnabled(true);
                 pancakeCount++;
+                if(areSettingsUpdated) {
+                    restorePreferences();
+                }
+                isTimerRunning = false;
                 return;
         }
 
@@ -123,26 +153,6 @@ public class MainActivity extends AppCompatActivity {
                 startTimer(counterId+1, mp);
             }
         }.start();
-    }
-
-    void restorePreferences() {
-        time_side1 = PrefUtil.getSide1(this);
-        time_side2 = PrefUtil.getSide2(this);
-        time_flip = PrefUtil.getFlip(this);
-
-        TextView textView_mode = findViewById(R.id.textView_mode);
-        int mode = PrefUtil.getMode(this);
-        switch(mode) {
-            case PrefUtil.MODE_PANCAKE:
-                textView_mode.setText("Mode: Pancake");
-                break;
-            case PrefUtil.MODE_CREPE:
-                textView_mode.setText("Mode: Crepe");
-                break;
-            case PrefUtil.MODE_CUSTOM:
-                textView_mode.setText("Mode: Custom");
-                break;
-        }
     }
 
     @Override
@@ -191,7 +201,12 @@ public class MainActivity extends AppCompatActivity {
 
         if(requestCode == LAUNCH_SETTINGS) {
             if(resultCode == Activity.RESULT_OK) {
-                restorePreferences();
+                if(!isTimerRunning) {
+                    restorePreferences();
+                }
+                else {
+                    areSettingsUpdated = true;
+                }
             }
         }
     }
