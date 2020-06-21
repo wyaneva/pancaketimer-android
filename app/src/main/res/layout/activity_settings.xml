@@ -73,7 +73,7 @@
                 android:text="Side 2 (secs)" />
 
             <EditText
-                android:id="@+id/editText2_Side2"
+                android:id="@+id/editText_Side2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:ems="10"

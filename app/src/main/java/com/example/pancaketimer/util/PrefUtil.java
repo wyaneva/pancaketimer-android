@@ -50,9 +50,12 @@ public class PrefUtil {
     }
 
     public static final String SIDE1_KEY = "com.example.pancaketimer.SIDE1_KEY";
-    public static int getSide1(Context context) {
+    public static int getSide1Milliseconds(Context context) {
         SharedPreferences pref = context.getSharedPreferences(PrefUtil.SHARED_PREF_FILE, context.MODE_PRIVATE);
         return pref.getInt(SIDE1_KEY, PANCAKE_SIDE1_DEFAULT*1000);
+    }
+    public static int getSide1Seconds(Context context) {
+        return getSide1Milliseconds(context) / 1000;
     }
     public static void setSide1Seconds(int seconds, Context context) {
         SharedPreferences.Editor prefedit = context.getSharedPreferences(PrefUtil.SHARED_PREF_FILE, context.MODE_PRIVATE).edit();
@@ -61,9 +64,12 @@ public class PrefUtil {
     }
 
     public static final String SIDE2_KEY = "com.example.pancaketimer.SIDE2_KEY";
-    public static int getSide2(Context context) {
+    public static int getSide2Milliseconds(Context context) {
         SharedPreferences pref = context.getSharedPreferences(PrefUtil.SHARED_PREF_FILE, context.MODE_PRIVATE);
         return pref.getInt(SIDE2_KEY, PANCAKE_SIDE2_DEFAULT*1000);
+    }
+    public static int getSide2Seconds(Context context) {
+        return getSide2Milliseconds(context) / 1000;
     }
     public static void setSide2Seconds(int seconds, Context context) {
         SharedPreferences.Editor prefedit = context.getSharedPreferences(PrefUtil.SHARED_PREF_FILE, context.MODE_PRIVATE).edit();

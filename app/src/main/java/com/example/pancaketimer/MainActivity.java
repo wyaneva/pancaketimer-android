@@ -10,13 +10,11 @@ import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.view.View;
@@ -71,8 +69,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     void restorePreferences() {
-        time_side1 = PrefUtil.getSide1(this);
-        time_side2 = PrefUtil.getSide2(this);
+        time_side1 = PrefUtil.getSide1Milliseconds(this);
+        time_side2 = PrefUtil.getSide2Milliseconds(this);
         time_flip = PrefUtil.getFlip(this);
 
         TextView textView_mode = findViewById(R.id.textView_mode);
