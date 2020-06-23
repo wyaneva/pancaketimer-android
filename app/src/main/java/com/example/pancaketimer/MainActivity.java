@@ -3,6 +3,7 @@ package com.example.pancaketimer;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -61,10 +62,10 @@ public class MainActivity extends AppCompatActivity {
         final Button button_start = findViewById(R.id.button_Start);
         button_start.setEnabled(value);
         if(value) {
-            button_start.getBackground().setAlpha(255);
+            button_start.setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimary));
         }
         else {
-            button_start.getBackground().setAlpha(100);
+            button_start.setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimaryPale));
         }
     }
 
