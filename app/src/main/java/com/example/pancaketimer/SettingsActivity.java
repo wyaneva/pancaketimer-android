@@ -79,11 +79,11 @@ public class SettingsActivity extends AppCompatActivity {
         final TextView textViewCrepeDefaults = findViewById(R.id.textView_crepeDefaults);
         textViewCrepeDefaults.setText(PrefUtil.CREPE_SIDE1_DEFAULT + "/" + PrefUtil.CREPE_FLIP_DEFAULT + "/" + PrefUtil.CREPE_SIDE2_DEFAULT);
 
-        // Set custom mode times
-        int time1 = PrefUtil.getSide1Seconds(this);
+        // Show custom mode times
+        int time1 = PrefUtil.getCustomSide1Seconds(this);
         final EditText editTextSide1 = findViewById(R.id.editText_Side1);
         editTextSide1.setText(Integer.toString(time1));
-        int time2 = PrefUtil.getSide2Seconds(this);
+        int time2 = PrefUtil.getCustomSide2Seconds(this);
         final EditText editTextSide2 = findViewById(R.id.editText_Side2);
         editTextSide2.setText(Integer.toString(time2));
         enableRadioButtons();
@@ -128,8 +128,8 @@ public class SettingsActivity extends AppCompatActivity {
                     } else {
                         int side1 = Integer.parseInt(side1_str);
                         int side2 = Integer.parseInt(side2_str);
-                        PrefUtil.setSide1Seconds(side1, SettingsActivity.this);
-                        PrefUtil.setSide2Seconds(side2, SettingsActivity.this);
+                        PrefUtil.setCustomSide1Seconds(side1, SettingsActivity.this);
+                        PrefUtil.setCustomSide2Seconds(side2, SettingsActivity.this);
                         finishActivityOK();
                     }
                     return;

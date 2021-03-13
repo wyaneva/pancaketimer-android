@@ -23,6 +23,7 @@ public class PrefUtil {
     public static final int CREPE_SIDE2_DEFAULT = 50;
     public static final int CREPE_FLIP_DEFAULT = 10;
 
+    // Saved mode preferences
     public static final String MODE_KEY = "com.example.pancaketimer.MODE_KEY";
     public static int getMode(Context context) {
         SharedPreferences pref = context.getSharedPreferences(PrefUtil.SHARED_PREF_FILE, context.MODE_PRIVATE);
@@ -32,59 +33,97 @@ public class PrefUtil {
         SharedPreferences.Editor prefedit = context.getSharedPreferences(PrefUtil.SHARED_PREF_FILE, context.MODE_PRIVATE).edit();
         prefedit.putInt(MODE_KEY, mode);
         prefedit.apply();
+    }
 
+    // Saved custom time preferences
+    public static final String CUSTOM_SIDE1_KEY = "com.example.pancaketimer.CUSTOM_SIDE1_KEY";
+    public static int getCustomSide1Milliseconds(Context context) {
+        SharedPreferences pref = context.getSharedPreferences(PrefUtil.SHARED_PREF_FILE, context.MODE_PRIVATE);
+        return pref.getInt(CUSTOM_SIDE1_KEY, PANCAKE_SIDE1_DEFAULT*1000);
+    }
+    public static int getCustomSide1Seconds(Context context) {
+        return getCustomSide1Milliseconds(context) / 1000;
+    }
+    public static void setCustomSide1Seconds(int seconds, Context context) {
+        SharedPreferences.Editor prefedit = context.getSharedPreferences(PrefUtil.SHARED_PREF_FILE, context.MODE_PRIVATE).edit();
+        prefedit.putInt(CUSTOM_SIDE1_KEY, seconds*1000);
+        prefedit.apply();
+    }
+
+    public static final String CUSTOM_SIDE2_KEY = "com.example.pancaketimer.CUSTOM_SIDE2_KEY";
+    public static int getCustomSide2Milliseconds(Context context) {
+        SharedPreferences pref = context.getSharedPreferences(PrefUtil.SHARED_PREF_FILE, context.MODE_PRIVATE);
+        return pref.getInt(CUSTOM_SIDE2_KEY, PANCAKE_SIDE2_DEFAULT*1000);
+    }
+    public static int getCustomSide2Seconds(Context context) {
+        return getCustomSide2Milliseconds(context) / 1000;
+    }
+    public static void setCustomSide2Seconds(int seconds, Context context) {
+        SharedPreferences.Editor prefedit = context.getSharedPreferences(PrefUtil.SHARED_PREF_FILE, context.MODE_PRIVATE).edit();
+        prefedit.putInt(CUSTOM_SIDE2_KEY, seconds*1000);
+        prefedit.apply();
+    }
+
+    public static final String CUSTOM_FLIP_KEY = "com.example.pancaketimer.CUSTOM_FLIP_KEY";
+    public static int getCustomFlipMilliseconds(Context context) {
+        SharedPreferences pref = context.getSharedPreferences(PrefUtil.SHARED_PREF_FILE, context.MODE_PRIVATE);
+        return pref.getInt(CUSTOM_FLIP_KEY, PANCAKE_FLIP_DEFAULT*1000);
+    }
+    public static void setCustomFlipSeconds(int seconds, Context context) {
+        SharedPreferences.Editor prefedit = context.getSharedPreferences(PrefUtil.SHARED_PREF_FILE, context.MODE_PRIVATE).edit();
+        prefedit.putInt(CUSTOM_FLIP_KEY, seconds*1000);
+        prefedit.apply();
+    }
+
+    // Get saved preferences
+    public static int getSide1Milliseconds(Context context) {
+        int side1time = PANCAKE_SIDE1_DEFAULT*1000;
+        int mode = getMode(context);
         switch(mode) {
-            case MODE_PANCAKE:
-                setSide1Seconds(PANCAKE_SIDE1_DEFAULT, context);
-                setSide2Seconds(PANCAKE_SIDE2_DEFAULT, context);
-                setFlipSeconds(PANCAKE_FLIP_DEFAULT, context);
-                break;
             case MODE_CREPE:
-                setSide1Seconds(CREPE_SIDE1_DEFAULT, context);
-                setSide2Seconds(CREPE_SIDE2_DEFAULT, context);
-                setFlipSeconds(CREPE_FLIP_DEFAULT, context);
+                side1time = CREPE_SIDE1_DEFAULT*1000;
+                break;
+            case MODE_CUSTOM:
+                side1time = getCustomSide1Milliseconds(context);
                 break;
             default:
                 break;
         }
+
+        return side1time;
     }
 
-    public static final String SIDE1_KEY = "com.example.pancaketimer.SIDE1_KEY";
-    public static int getSide1Milliseconds(Context context) {
-        SharedPreferences pref = context.getSharedPreferences(PrefUtil.SHARED_PREF_FILE, context.MODE_PRIVATE);
-        return pref.getInt(SIDE1_KEY, PANCAKE_SIDE1_DEFAULT*1000);
-    }
-    public static int getSide1Seconds(Context context) {
-        return getSide1Milliseconds(context) / 1000;
-    }
-    public static void setSide1Seconds(int seconds, Context context) {
-        SharedPreferences.Editor prefedit = context.getSharedPreferences(PrefUtil.SHARED_PREF_FILE, context.MODE_PRIVATE).edit();
-        prefedit.putInt(SIDE1_KEY, seconds*1000);
-        prefedit.apply();
-    }
-
-    public static final String SIDE2_KEY = "com.example.pancaketimer.SIDE2_KEY";
     public static int getSide2Milliseconds(Context context) {
-        SharedPreferences pref = context.getSharedPreferences(PrefUtil.SHARED_PREF_FILE, context.MODE_PRIVATE);
-        return pref.getInt(SIDE2_KEY, PANCAKE_SIDE2_DEFAULT*1000);
-    }
-    public static int getSide2Seconds(Context context) {
-        return getSide2Milliseconds(context) / 1000;
-    }
-    public static void setSide2Seconds(int seconds, Context context) {
-        SharedPreferences.Editor prefedit = context.getSharedPreferences(PrefUtil.SHARED_PREF_FILE, context.MODE_PRIVATE).edit();
-        prefedit.putInt(SIDE2_KEY, seconds*1000);
-        prefedit.apply();
+        int side2time = PANCAKE_SIDE2_DEFAULT*1000;
+        int mode = getMode(context);
+        switch(mode) {
+            case MODE_CREPE:
+                side2time = CREPE_SIDE2_DEFAULT*1000;
+                break;
+            case MODE_CUSTOM:
+                side2time = getCustomSide2Milliseconds(context);
+                break;
+            default:
+                break;
+        }
+
+        return side2time;
     }
 
-    public static final String FLIP_KEY = "com.example.pancaketimer.FLIP_KEY";
-    public static int getFlip(Context context) {
-        SharedPreferences pref = context.getSharedPreferences(PrefUtil.SHARED_PREF_FILE, context.MODE_PRIVATE);
-        return pref.getInt(FLIP_KEY, PANCAKE_FLIP_DEFAULT*1000);
-    }
-    public static void setFlipSeconds(int seconds, Context context) {
-        SharedPreferences.Editor prefedit = context.getSharedPreferences(PrefUtil.SHARED_PREF_FILE, context.MODE_PRIVATE).edit();
-        prefedit.putInt(FLIP_KEY, seconds*1000);
-        prefedit.apply();
+    public static int getFlipMilliseconds(Context context) {
+        int fliptime = PANCAKE_FLIP_DEFAULT*1000;
+        int mode = getMode(context);
+        switch(mode) {
+            case MODE_CREPE:
+                fliptime = CREPE_FLIP_DEFAULT*1000;
+                break;
+            case MODE_CUSTOM:
+                fliptime = getCustomFlipMilliseconds(context);
+                break;
+            default:
+                break;
+        }
+
+        return fliptime;
     }
 }
