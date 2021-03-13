@@ -19,8 +19,8 @@ public class PrefUtil {
     public static final int PANCAKE_SIDE1_DEFAULT = 85;
     public static final int PANCAKE_SIDE2_DEFAULT = 60;
     public static final int PANCAKE_FLIP_DEFAULT = 5;
-    public static final int CREPE_SIDE1_DEFAULT = 80;
-    public static final int CREPE_SIDE2_DEFAULT = 40;
+    public static final int CREPE_SIDE1_DEFAULT = 90;
+    public static final int CREPE_SIDE2_DEFAULT = 50;
     public static final int CREPE_FLIP_DEFAULT = 10;
 
     public static final String MODE_KEY = "com.example.pancaketimer.MODE_KEY";

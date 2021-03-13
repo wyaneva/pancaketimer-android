@@ -8,9 +8,11 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.Toast;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.pancaketimer.customviews.RadioGroupTable;
 import com.example.pancaketimer.util.PrefUtil;
 
 public class SettingsActivity extends AppCompatActivity {
@@ -48,6 +50,7 @@ public class SettingsActivity extends AppCompatActivity {
         getSupportActionBar().setIcon(R.drawable.ic_settings);
         getSupportActionBar().setTitle("Settings");
 
+        final RadioGroupTable radioGroupSettings = findViewById(R.id.radioGroup_settings);
         final RadioButton radioButtonPancake = findViewById(R.id.radioButton_pancakemode);
         final RadioButton radioButtonCrepe = findViewById(R.id.radioButton_crepemode);
         final RadioButton radioButtonCustom = findViewById(R.id.radioButton_custommode);
@@ -57,15 +60,26 @@ public class SettingsActivity extends AppCompatActivity {
         switch (mode){
             case PrefUtil.MODE_PANCAKE:
                 radioButtonPancake.setChecked(true);
+                radioGroupSettings.check(radioButtonPancake.getId());
                 break;
             case PrefUtil.MODE_CREPE:
                 radioButtonCrepe.setChecked(true);
+                radioGroupSettings.check(radioButtonCrepe.getId());
                 break;
             case PrefUtil.MODE_CUSTOM:
                 radioButtonCustom.setChecked(true);
+                radioGroupSettings.check(radioButtonCustom.getId());
                 break;
         }
 
+        // Show default times
+        final TextView textViewPancakeDefaults = findViewById(R.id.textView_pancakeDefaults);
+        textViewPancakeDefaults.setText(PrefUtil.PANCAKE_SIDE1_DEFAULT + "/" + PrefUtil.PANCAKE_FLIP_DEFAULT + "/" + PrefUtil.PANCAKE_SIDE2_DEFAULT);
+
+        final TextView textViewCrepeDefaults = findViewById(R.id.textView_crepeDefaults);
+        textViewCrepeDefaults.setText(PrefUtil.CREPE_SIDE1_DEFAULT + "/" + PrefUtil.CREPE_FLIP_DEFAULT + "/" + PrefUtil.CREPE_SIDE2_DEFAULT);
+
+        // Set custom mode times
         int time1 = PrefUtil.getSide1Seconds(this);
         final EditText editTextSide1 = findViewById(R.id.editText_Side1);
         editTextSide1.setText(Integer.toString(time1));
