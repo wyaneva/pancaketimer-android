@@ -35,7 +35,7 @@ public class PrefUtil {
         prefedit.apply();
     }
 
-    // Saved custom time preferences
+    // Saved custom preferences
     public static final String CUSTOM_SIDE1_KEY = "com.example.pancaketimer.CUSTOM_SIDE1_KEY";
     public static int getCustomSide1Milliseconds(Context context) {
         SharedPreferences pref = context.getSharedPreferences(PrefUtil.SHARED_PREF_FILE, context.MODE_PRIVATE);
@@ -68,6 +68,9 @@ public class PrefUtil {
     public static int getCustomFlipMilliseconds(Context context) {
         SharedPreferences pref = context.getSharedPreferences(PrefUtil.SHARED_PREF_FILE, context.MODE_PRIVATE);
         return pref.getInt(CUSTOM_FLIP_KEY, PANCAKE_FLIP_DEFAULT*1000);
+    }
+    public static int getCustomFlipSeconds(Context context) {
+        return getCustomFlipMilliseconds(context) / 1000;
     }
     public static void setCustomFlipSeconds(int seconds, Context context) {
         SharedPreferences.Editor prefedit = context.getSharedPreferences(PrefUtil.SHARED_PREF_FILE, context.MODE_PRIVATE).edit();

@@ -27,16 +27,19 @@ public class SettingsActivity extends AppCompatActivity {
         final RadioButton radioButtonCrepe = findViewById(R.id.radioButton_crepemode);
         final RadioButton radioButtonCustom = findViewById(R.id.radioButton_custommode);
         final EditText editTextSide1 = findViewById(R.id.editText_Side1);
+        final EditText editTextFlip = findViewById(R.id.editText_Flip);
         final EditText editTextSide2 = findViewById(R.id.editText_Side2);
 
         if(radioButtonPancake.isChecked() || radioButtonCrepe.isChecked()) {
             editTextSide1.setEnabled(false);
+            editTextFlip.setEnabled(false);
             editTextSide2.setEnabled(false);
             return;
         }
 
         if(radioButtonCustom.isChecked()) {
             editTextSide1.setEnabled(true);
+            editTextFlip.setEnabled(true);
             editTextSide2.setEnabled(true);
             return;
         }
@@ -83,9 +86,14 @@ public class SettingsActivity extends AppCompatActivity {
         int time1 = PrefUtil.getCustomSide1Seconds(this);
         final EditText editTextSide1 = findViewById(R.id.editText_Side1);
         editTextSide1.setText(Integer.toString(time1));
+        int flip = PrefUtil.getCustomFlipSeconds(this);
+        final EditText editTextFlip = findViewById(R.id.editText_Flip);
+        editTextFlip.setText(Integer.toString(flip));
         int time2 = PrefUtil.getCustomSide2Seconds(this);
         final EditText editTextSide2 = findViewById(R.id.editText_Side2);
         editTextSide2.setText(Integer.toString(time2));
+
+        // Set the radio button enable
         enableRadioButtons();
 
         // Set listener on radio buttons
@@ -119,16 +127,19 @@ public class SettingsActivity extends AppCompatActivity {
                 if(radioButtonCustom.isChecked()) {
                     PrefUtil.setMode(PrefUtil.MODE_CUSTOM, SettingsActivity.this);
                     String side1_str = editTextSide1.getText().toString();
+                    String flip_str = editTextFlip.getText().toString();
                     String side2_str = editTextSide2.getText().toString();
-                    if(side1_str.isEmpty() || side2_str.isEmpty()) {
-                        CharSequence text = "Please, enter custom times \nfor Side 1 and Side 2.";
+                    if(side1_str.isEmpty() || flip_str.isEmpty() || side2_str.isEmpty()) {
+                        CharSequence text = "Please, enter custom times \nfor Side 1, Flip and Side 2.";
                         int duration = Toast.LENGTH_SHORT;
                         Toast toast = Toast.makeText(SettingsActivity.this, text, duration);
                         toast.show();
                     } else {
                         int side1 = Integer.parseInt(side1_str);
-                        int side2 = Integer.parseInt(side2_str);
                         PrefUtil.setCustomSide1Seconds(side1, SettingsActivity.this);
+                        int flip = Integer.parseInt(flip_str);
+                        PrefUtil.setCustomFlipSeconds(flip, SettingsActivity.this);
+                        int side2 = Integer.parseInt(side2_str);
                         PrefUtil.setCustomSide2Seconds(side2, SettingsActivity.this);
                         finishActivityOK();
                     }
