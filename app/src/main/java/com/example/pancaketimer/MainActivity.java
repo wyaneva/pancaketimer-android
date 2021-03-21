@@ -27,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
 
     private SharedPreferences preferences;
     private MediaPlayer mediaPlayer;
+    private PancakeCountDownTimer pancakeTimer;
 
     int time_side1;
     int time_flip;
@@ -144,9 +145,9 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
-        PancakeCountDownTimer timer = new PancakeCountDownTimer(this, counterId, total_ms, 1000);
-        timer.setParameters(endText, isFlip);
-        timer.start();
+        pancakeTimer = new PancakeCountDownTimer(this, counterId, total_ms, 1000);
+        pancakeTimer.setParameters(endText, isFlip);
+        pancakeTimer.start();
     }
 
     @Override
@@ -179,10 +180,14 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // Set the stop button
-        final Button button_Stop = findViewById(R.id.button_Pause);
-        button_Pause.setOnClickListener(new View.OnClickListener() {
+        final Button button_Stop = findViewById(R.id.button_Stop);
+        button_Stop.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                //TODO:
+                setStartButtonEnabled(true);
+                setPauseAndStopButtonVisibility(false);
+                pancakeTimer.cancel();
+                write_progress(0, "");
+                isTimerRunning = false;
             }
         });
 
