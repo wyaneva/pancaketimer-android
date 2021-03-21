@@ -10,16 +10,15 @@ public class PancakeCountDownTimer extends CountDownTimer {
     long remaining_ms;
     int counterId;
     MainActivity parentActivity;
-
     CharSequence endText;
     Boolean isFlip;
 
 
     public PancakeCountDownTimer(MainActivity parent, int counterId, long millisInFuture, long countDownInterval) {
         super(millisInFuture, countDownInterval);
-        this.parentActivity = parent;
-        this.counterId = counterId;
         this.remaining_ms = millisInFuture;
+        this.counterId = counterId;
+        this.parentActivity = parent;
     }
 
     public void setParameters(CharSequence endText, Boolean isFlip, long totalTime) {

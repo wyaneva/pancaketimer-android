@@ -69,25 +69,20 @@ public class MainActivity extends AppCompatActivity {
         textView_side.setText(text);
     }
 
-    void setPauseAndStopButtonVisibility(Boolean value) {
+    void setButtonVisibility(Boolean toStart) {
+        final Button button_Start = findViewById(R.id.button_Start);
         final Button button_Pause = findViewById(R.id.button_Pause);
         final Button button_Stop = findViewById(R.id.button_Stop);
-        if(value){
-            button_Pause.setVisibility(button_Stop.VISIBLE);
-            button_Stop.setVisibility(button_Stop.VISIBLE);
-        } else {
+        if(toStart){
+            // to Start
+            button_Start.setVisibility(button_Start.VISIBLE);
             button_Pause.setVisibility(button_Stop.GONE);
             button_Stop.setVisibility(button_Stop.GONE);
-        }
-    }
-
-    void setStartButtonEnabled(Boolean value) {
-        final Button button_start = findViewById(R.id.button_Start);
-        if(value) {
-            button_start.setVisibility(button_start.VISIBLE);
-        }
-        else {
-            button_start.setVisibility(button_start.GONE);
+        } else {
+            // to Pause and Stop
+            button_Start.setVisibility(button_Start.GONE);
+            button_Pause.setVisibility(button_Stop.VISIBLE);
+            button_Stop.setVisibility(button_Stop.VISIBLE);
         }
     }
 
@@ -151,8 +146,7 @@ public class MainActivity extends AppCompatActivity {
                 endText = "Done!";
                 break;
             default: // after all are done
-                setStartButtonEnabled(true);
-                setPauseAndStopButtonVisibility(false);
+                setButtonVisibility(true);
                 pancakeCount++;
                 if(areSettingsUpdated) {
                     restorePreferences();
@@ -178,12 +172,14 @@ public class MainActivity extends AppCompatActivity {
 
         restorePreferences();
 
+        // Set visibility on the buttons
+        setButtonVisibility(true);
+
         // Set the start button
         final Button button_Start = findViewById(R.id.button_Start);
         button_Start.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                setStartButtonEnabled(false);
-                setPauseAndStopButtonVisibility(true);
+                setButtonVisibility(false);
                 startTimer(0, false);
             }
         });
@@ -212,8 +208,7 @@ public class MainActivity extends AppCompatActivity {
         button_Stop.setOnClickListener(new View.OnClickListener() {
             @SuppressLint("ResourceAsColor")
             public void onClick(View v) {
-                setStartButtonEnabled(true);
-                setPauseAndStopButtonVisibility(false);
+                setButtonVisibility(true);
                 pancakeTimer.cancel();
                 update_side("");
                 write_progress(0, "");
@@ -223,8 +218,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // Set visibility on the pause and stop buttons
-        setPauseAndStopButtonVisibility(false);
     }
 
     @Override
