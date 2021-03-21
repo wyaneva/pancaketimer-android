@@ -20,11 +20,13 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.view.View;
 
+import com.example.pancaketimer.util.PancakeCountDownTimer;
 import com.example.pancaketimer.util.PrefUtil;
 
 public class MainActivity extends AppCompatActivity {
 
     private SharedPreferences preferences;
+    private MediaPlayer mediaPlayer;
 
     int time_side1;
     int time_flip;
@@ -37,12 +39,16 @@ public class MainActivity extends AppCompatActivity {
 
     int pancakeCount = 1;
 
-    void write_progress(int progress) {
+    public void play_sound() {
+        mediaPlayer.start();
+    }
+
+    public void write_progress(int progress) {
         final ProgressBar progress_countdown = findViewById(R.id.progress_countdown);
         progress_countdown.setProgress(progress);
     }
 
-    void write_progress(int progress, CharSequence text) {
+    public void write_progress(int progress, CharSequence text) {
         write_progress(progress);
         final TextView textView_countdown= findViewById(R.id.textView_countdown);
         textView_countdown.setText(text);
@@ -58,7 +64,19 @@ public class MainActivity extends AppCompatActivity {
         textView_side.setText(text);
     }
 
-    void setButtonEnabled(Boolean value) {
+    void setPauseAndStopButtonVisibility(Boolean value) {
+        final Button button_Pause = findViewById(R.id.button_Pause);
+        final Button button_Stop = findViewById(R.id.button_Stop);
+        if(value){
+            button_Pause.setVisibility(button_Stop.VISIBLE);
+            button_Stop.setVisibility(button_Stop.VISIBLE);
+        } else {
+            button_Pause.setVisibility(button_Stop.GONE);
+            button_Stop.setVisibility(button_Stop.GONE);
+        }
+    }
+
+    void setStartButtonEnabled(Boolean value) {
         final Button button_start = findViewById(R.id.button_Start);
         button_start.setEnabled(value);
         if(value) {
@@ -91,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
         areSettingsUpdated = false;
     }
 
-    void startTimer(final int counterId, final MediaPlayer mp) {
+    public void startTimer(final int counterId) {
 
         isTimerRunning = true;
 
@@ -114,8 +132,9 @@ public class MainActivity extends AppCompatActivity {
                 total_ms = time_side2;
                 endText = "Done!";
                 break;
-            default:
-                setButtonEnabled(true);
+            default: // after all are done
+                setStartButtonEnabled(true);
+                setPauseAndStopButtonVisibility(false);
                 pancakeCount++;
                 if(areSettingsUpdated) {
                     restorePreferences();
@@ -124,34 +143,10 @@ public class MainActivity extends AppCompatActivity {
                 return;
         }
 
-        final long finalTotal_ms = total_ms;
-        final CharSequence finalEndText = endText;
-        final Boolean finalIsFlip = isFlip;
 
-        new CountDownTimer(finalTotal_ms, 1000) {
-            @Override
-            public void onTick(long millisUntilFinished) {
-                long sUntilFinished = millisUntilFinished / 1000 + 1; // dispay n to 1, not n-1 to 0
-                long total_s = finalTotal_ms / 1000;
-                int progress = (int) ((sUntilFinished * 100) / total_s);
-                CharSequence text = sUntilFinished + "/" + total_s;
-
-                if (!finalIsFlip) {
-                    write_progress(progress, text);
-                } else {
-                    write_progress(progress);
-                }
-            }
-
-            @Override
-            public void onFinish() {
-                write_progress(0, finalEndText);
-                if(!finalIsFlip) {
-                    mp.start();
-                }
-                startTimer(counterId+1, mp);
-            }
-        }.start();
+        PancakeCountDownTimer timer = new PancakeCountDownTimer(this, counterId, total_ms, 1000);
+        timer.setParameters(endText, isFlip);
+        timer.start();
     }
 
     @Override
@@ -161,18 +156,38 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().setIcon(R.drawable.ic_timer);
         getSupportActionBar().setTitle("Pancake Timer");
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        final MediaPlayer mp = MediaPlayer.create(this, R.raw.beep);
+        mediaPlayer = MediaPlayer.create(this, R.raw.beep);
 
         restorePreferences();
 
-        final Button button = findViewById(R.id.button_Start);
-        final TextView textView_side = findViewById(R.id.textView_side);
-        button.setOnClickListener(new View.OnClickListener() {
+        // Set the start button
+        final Button button_Start = findViewById(R.id.button_Start);
+        button_Start.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                setButtonEnabled(false);
-                startTimer(0, mp);
+                setStartButtonEnabled(false);
+                setPauseAndStopButtonVisibility(true);
+                startTimer(0);
             }
         });
+
+        // Set the pause button
+        final Button button_Pause = findViewById(R.id.button_Pause);
+        button_Pause.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                //TODO:
+            }
+        });
+
+        // Set the stop button
+        final Button button_Stop = findViewById(R.id.button_Pause);
+        button_Pause.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                //TODO:
+            }
+        });
+
+        // Set visibility on the pause and stop buttons
+        setPauseAndStopButtonVisibility(false);
     }
 
     @Override
