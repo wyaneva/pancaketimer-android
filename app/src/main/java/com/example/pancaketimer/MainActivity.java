@@ -5,6 +5,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -39,6 +40,9 @@ public class MainActivity extends AppCompatActivity {
     boolean isTimerRunning = false;
 
     int pancakeCount = 1;
+    boolean isTimerPaused = false;
+    long timeLeftOnPausedTimer_ms = 0;
+    int counterIdOnPausedTimer = 0;
 
     public void play_sound() {
         mediaPlayer.start();
@@ -79,12 +83,24 @@ public class MainActivity extends AppCompatActivity {
 
     void setStartButtonEnabled(Boolean value) {
         final Button button_start = findViewById(R.id.button_Start);
-        button_start.setEnabled(value);
         if(value) {
-            button_start.setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimary));
+            button_start.setVisibility(button_start.VISIBLE);
         }
         else {
-            button_start.setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimaryPale));
+            button_start.setVisibility(button_start.GONE);
+        }
+    }
+
+    void resetPauseResumeButton(Boolean toPause) {
+        final Button button_Pause = findViewById(R.id.button_Pause);
+        if(toPause) {
+            // To Pause
+            button_Pause.setText("PAUSE");
+            button_Pause.setTextColor(ContextCompat.getColor(this, R.color.colorTextPrimary));
+        } else {
+            // To Resume
+            button_Pause.setText("RESUME");
+            button_Pause.setTextColor(ContextCompat.getColor(this, R.color.colorTextAccent));
         }
     }
 
@@ -110,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
         areSettingsUpdated = false;
     }
 
-    public void startTimer(final int counterId) {
+    public void startTimer(final int counterId, boolean isResume) {
 
         isTimerRunning = true;
 
@@ -125,6 +141,7 @@ public class MainActivity extends AppCompatActivity {
                 total_ms = time_side1;
                 break;
             case 1: // flip time
+                update_side("");
                 total_ms = time_flip;
                 isFlip = true;
                 break;
@@ -143,10 +160,10 @@ public class MainActivity extends AppCompatActivity {
                 isTimerRunning = false;
                 return;
         }
+        long remainingTime = isResume ? timeLeftOnPausedTimer_ms : total_ms;
 
-
-        pancakeTimer = new PancakeCountDownTimer(this, counterId, total_ms, 1000);
-        pancakeTimer.setParameters(endText, isFlip);
+        pancakeTimer = new PancakeCountDownTimer(this, counterId, remainingTime, 1000);
+        pancakeTimer.setParameters(endText, isFlip, total_ms);
         pancakeTimer.start();
     }
 
@@ -167,7 +184,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 setStartButtonEnabled(false);
                 setPauseAndStopButtonVisibility(true);
-                startTimer(0);
+                startTimer(0, false);
             }
         });
 
@@ -175,19 +192,34 @@ public class MainActivity extends AppCompatActivity {
         final Button button_Pause = findViewById(R.id.button_Pause);
         button_Pause.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                //TODO:
+                if(isTimerPaused) {
+                    // Resume
+                    startTimer(counterIdOnPausedTimer, true);
+                    resetPauseResumeButton(true);
+                } else {
+                    // Pause
+                    timeLeftOnPausedTimer_ms = pancakeTimer.getRemainingTime();
+                    counterIdOnPausedTimer = pancakeTimer.getCounterId();
+                    pancakeTimer.cancel();
+                    resetPauseResumeButton(false);
+                }
+                isTimerPaused = !isTimerPaused;
             }
         });
 
         // Set the stop button
         final Button button_Stop = findViewById(R.id.button_Stop);
         button_Stop.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("ResourceAsColor")
             public void onClick(View v) {
                 setStartButtonEnabled(true);
                 setPauseAndStopButtonVisibility(false);
                 pancakeTimer.cancel();
+                update_side("");
                 write_progress(0, "");
                 isTimerRunning = false;
+                isTimerPaused = false;
+                resetPauseResumeButton(true);
             }
         });
 

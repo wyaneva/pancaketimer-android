@@ -7,26 +7,40 @@ import com.example.pancaketimer.MainActivity;
 public class PancakeCountDownTimer extends CountDownTimer {
 
     long total_ms;
+    long remaining_ms;
     int counterId;
     MainActivity parentActivity;
 
     CharSequence endText;
     Boolean isFlip;
 
+
     public PancakeCountDownTimer(MainActivity parent, int counterId, long millisInFuture, long countDownInterval) {
         super(millisInFuture, countDownInterval);
         this.parentActivity = parent;
         this.counterId = counterId;
-        this.total_ms = millisInFuture;
+        this.remaining_ms = millisInFuture;
     }
 
-    public void setParameters(CharSequence endText, Boolean isFlip) {
+    public void setParameters(CharSequence endText, Boolean isFlip, long totalTime) {
         this.endText = endText;
         this.isFlip = isFlip;
+        this.total_ms = totalTime;
+    }
+
+    public long getRemainingTime() {
+        return remaining_ms;
+    }
+
+    public int getCounterId() {
+        return counterId;
     }
 
     @Override
     public void onTick(long millisUntilFinished) {
+        remaining_ms = millisUntilFinished;
+
+        // progress display
         long sUntilFinished = millisUntilFinished / 1000 + 1; // dispay n to 1, not n-1 to 0
         long total_s = total_ms / 1000;
         int progress = (int) ((sUntilFinished * 100) / total_s);
@@ -45,6 +59,6 @@ public class PancakeCountDownTimer extends CountDownTimer {
         if(!isFlip) {
             parentActivity.play_sound();
         }
-        parentActivity.startTimer(counterId+1);
+        parentActivity.startTimer(counterId+1, false);
     }
 }
